@@ -1,0 +1,441 @@
+{
+  "name": "My workflow 2519",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1200,
+        400
+      ],
+      "id": "b570a513-2733-4521-b757-dfcb86e8ddd5",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v23.0/act_1036361418710293/insights?level=campaign&fields=campaign_id,campaign_name,clicks,conversions,ctr,cpc,cpm,spend&time_range={'since':'2025-08-16','until':'2025-08-16'}&sort=campaign_name_ascending&limit=1000&access_token=EAASPNbgDZAbEBPCXi9ygnJEXEZBKR0z85s5P1YmLcRWUmqqtI0dsCNpVZCPXAiBxhvlTZBMnZBI5O1ZA9YDjw80GT3RjnRud4FZBos8sWJalYrRDqXcIJ9G8P5EP96ZCBX8mi8KFawjnrLUJufJSWpFQRPh5TvcBpAvwf6U8CKyBwSX8mZClGr1U7tZBlsxZAGZCvqlZCiRkPShaEd1eFIH4rFIbM",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -976,
+        400
+      ],
+      "id": "e2bc5321-dc60-4a0a-93cc-35911ae3cc49",
+      "name": "Get Insight Campaign"
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v23.0/{{ $json.campaign_id }}?fields=daily_budget,lifetime_budget,budget_remaining&access_token=EAASPNbgDZAbEBPCXi9ygnJEXEZBKR0z85s5P1YmLcRWUmqqtI0dsCNpVZCPXAiBxhvlTZBMnZBI5O1ZA9YDjw80GT3RjnRud4FZBos8sWJalYrRDqXcIJ9G8P5EP96ZCBX8mi8KFawjnrLUJufJSWpFQRPh5TvcBpAvwf6U8CKyBwSX8mZClGr1U7tZBlsxZAGZCvqlZCiRkPShaEd1eFIH4rFIbM",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        8,
+        400
+      ],
+      "id": "c4772cf2-de60-4081-8fd5-48d5706c3501",
+      "name": "Get Budget Campaign Details"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -528,
+        400
+      ],
+      "id": "a906e51a-94b9-4b79-9761-8b3b09f8c2ef",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1nsqVe9iI3xsGRtlp9Fa_rMgM-UV-hCUu4OwSVyWmJas",
+          "mode": "list",
+          "cachedResultName": "01.Data_Facebook_Ads (Nhuan)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1nsqVe9iI3xsGRtlp9Fa_rMgM-UV-hCUu4OwSVyWmJas/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Thống Kê",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1nsqVe9iI3xsGRtlp9Fa_rMgM-UV-hCUu4OwSVyWmJas/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Tên Chiến Dịch": "={{ $('If').item.json.campaign_name }}",
+            "Ngân Sách Hằng Ngày": "={{ $json.daily_budget }}",
+            "Người Tiếp Cận": "=",
+            "Lượt Hiển Thị": "=",
+            "Lượt Click": "={{ $('Get Insight Campaign').item.json.data[0].clicks }}",
+            "Số Tiền Đã Chi": "={{ $('If').item.json.spend }}",
+            "CTR": "={{ $('If').item.json.ctr }}",
+            "CPC": "={{ $('If').item.json.cpc }}",
+            "CPM": "={{ $('If').item.json.cpm }}",
+            "Tần Suất": "=",
+            "Leads": "=",
+            "Message": "="
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Tên Chiến Dịch",
+              "displayName": "Tên Chiến Dịch",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Ngân Sách Hằng Ngày",
+              "displayName": "Ngân Sách Hằng Ngày",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Người Tiếp Cận",
+              "displayName": "Người Tiếp Cận",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Lượt Hiển Thị",
+              "displayName": "Lượt Hiển Thị",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Lượt Click",
+              "displayName": "Lượt Click",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Số Tiền Đã Chi",
+              "displayName": "Số Tiền Đã Chi",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "CTR",
+              "displayName": "CTR",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "CPC",
+              "displayName": "CPC",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "CPM",
+              "displayName": "CPM",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Tần Suất",
+              "displayName": "Tần Suất",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Leads",
+              "displayName": "Leads",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Message",
+              "displayName": "Message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        320,
+        472
+      ],
+      "id": "fcd037b0-2862-46cf-b0d9-ad8be2c0f093",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleApi": {
+          "id": "UFYSZcd8CgntABwS",
+          "name": "GSA_N"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -304,
+        104
+      ],
+      "id": "176bccfe-0f85-475d-bf3f-3613b8b8ae66",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -752,
+        400
+      ],
+      "id": "c4b49786-4b63-41ec-9a7c-0bfb71eed22b",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "chatId": "6980864856",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        320,
+        104
+      ],
+      "id": "08d5806c-4eb0-4c33-84e8-af774190c785",
+      "name": "Send a text message",
+      "webhookId": "84e5217d-2d69-4707-a348-9a854033983e",
+      "credentials": {
+        "telegramApi": {
+          "id": "XNAIMarZVdMibXJ8",
+          "name": "Telegram account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.data }}",
+        "options": {
+          "systemMessage": "=Bạn là một trợ lý AI thông minh. Việc của bạn là phân tích Phân tích chi tiết hiệu suất Facebook Ads từ dữ liệu sau\n{{ $json.data }}\n  hãy tự tạo báo cáo với các thông số đẹp nhất có thể, ngắn gọn đơn giản bạn nhé  \nBáo cáo ngắn gọn thôi dưới 500 từ"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        -80,
+        0
+      ],
+      "id": "bb94dc7e-8bdf-43cd-9261-5dea69cb15f6",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        16,
+        224
+      ],
+      "id": "4310656d-8aa4-43d3-bfe8-f575433cf32d",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "Ed8Jh9kqfVkHaB9Y",
+          "name": "OpenAi account 25_API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Insight Campaign",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Insight Campaign": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Budget Campaign Details": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Budget Campaign Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "00bc94d3-a802-4752-97c4-cafcbadfe041",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "94a383c02457267bcc44878635a0fa02b7d3206c5479bfc8890faa812e2bbd97"
+  },
+  "id": "XXdOnmDDMHFxaLXs",
+  "tags": []
+}
