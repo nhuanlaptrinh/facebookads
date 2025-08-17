@@ -1,5 +1,5 @@
 {
-  "name": "My workflow 2519",
+  "name": "03. Facebook_V03",
   "nodes": [
     {
       "parameters": {
@@ -14,8 +14,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -1200,
-        400
+        -1392,
+        352
       ],
       "id": "b570a513-2733-4521-b757-dfcb86e8ddd5",
       "name": "Schedule Trigger"
@@ -28,8 +28,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -976,
-        400
+        -1168,
+        352
       ],
       "id": "e2bc5321-dc60-4a0a-93cc-35911ae3cc49",
       "name": "Get Insight Campaign"
@@ -42,21 +42,23 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        8,
-        400
+        -496,
+        352
       ],
       "id": "c4772cf2-de60-4081-8fd5-48d5706c3501",
       "name": "Get Budget Campaign Details"
     },
     {
       "parameters": {
-        "options": {}
+        "options": {
+          "reset": false
+        }
       },
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -528,
-        400
+        -720,
+        352
       ],
       "id": "a906e51a-94b9-4b79-9761-8b3b09f8c2ef",
       "name": "Loop Over Items1"
@@ -82,15 +84,15 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "Tên Chiến Dịch": "={{ $('If').item.json.campaign_name }}",
+            "Tên Chiến Dịch": "={{ $('Split Out1').item.json.campaign_id }}",
             "Ngân Sách Hằng Ngày": "={{ $json.daily_budget }}",
             "Người Tiếp Cận": "=",
             "Lượt Hiển Thị": "=",
-            "Lượt Click": "={{ $('Get Insight Campaign').item.json.data[0].clicks }}",
-            "Số Tiền Đã Chi": "={{ $('If').item.json.spend }}",
-            "CTR": "={{ $('If').item.json.ctr }}",
-            "CPC": "={{ $('If').item.json.cpc }}",
-            "CPM": "={{ $('If').item.json.cpm }}",
+            "Lượt Click": "={{ $('Split Out1').item.json.clicks }}",
+            "Số Tiền Đã Chi": "={{ $('Split Out1').item.json.spend }}",
+            "CTR": "={{ $('Split Out1').item.json.ctr }}",
+            "CPC": "={{ $('Split Out1').item.json.cpc }}",
+            "CPM": "={{ $('Split Out1').item.json.cpm }}",
             "Tần Suất": "=",
             "Leads": "=",
             "Message": "="
@@ -214,8 +216,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.6,
       "position": [
-        320,
-        472
+        128,
+        304
       ],
       "id": "fcd037b0-2862-46cf-b0d9-ad8be2c0f093",
       "name": "Append row in sheet",
@@ -234,8 +236,8 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        -304,
-        104
+        -496,
+        16
       ],
       "id": "176bccfe-0f85-475d-bf3f-3613b8b8ae66",
       "name": "Aggregate"
@@ -248,8 +250,8 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        -752,
-        400
+        -944,
+        352
       ],
       "id": "c4b49786-4b63-41ec-9a7c-0bfb71eed22b",
       "name": "Split Out1"
@@ -263,8 +265,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        320,
-        104
+        128,
+        16
       ],
       "id": "08d5806c-4eb0-4c33-84e8-af774190c785",
       "name": "Send a text message",
@@ -287,8 +289,8 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.1,
       "position": [
-        -80,
-        0
+        -272,
+        -96
       ],
       "id": "bb94dc7e-8bdf-43cd-9261-5dea69cb15f6",
       "name": "AI Agent"
@@ -305,8 +307,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        16,
-        224
+        -176,
+        128
       ],
       "id": "4310656d-8aa4-43d3-bfe8-f575433cf32d",
       "name": "OpenAI Chat Model",
@@ -316,6 +318,86 @@
           "name": "OpenAi account 25_API"
         }
       }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "34f80afa-731f-48de-a880-c99ca0aed261",
+              "name": "Ngân sách hàng ngày",
+              "value": "={{ $json.daily_budget }}",
+              "type": "string"
+            },
+            {
+              "id": "b9a96b29-7166-496a-83b1-ba0317ded25a",
+              "name": "Tên Chiến Dịch ",
+              "value": "={{ $('Split Out1').item.json.campaign_name }}",
+              "type": "string"
+            },
+            {
+              "id": "0de1e267-62fc-413a-b017-863e4a7c0d8c",
+              "name": "CPC",
+              "value": "={{ $('Split Out1').item.json.cpc }}",
+              "type": "number"
+            },
+            {
+              "id": "4f4fcbcd-dde5-4772-ba7b-d064017644f7",
+              "name": "cpm",
+              "value": "={{ $('Split Out1').item.json.cpm }}",
+              "type": "number"
+            },
+            {
+              "id": "dd4f1925-0631-48b4-9664-97e551c66ed8",
+              "name": "Chi Tiêu",
+              "value": "={{ $('Split Out1').item.json.spend }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -192,
+        528
+      ],
+      "id": "768788de-736d-4b20-bf3e-4ae0df5fd6bf",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "80a74765-4665-4196-a462-73a024686439",
+              "leftValue": "={{ $('Split Out1').item.json.campaign_name }}",
+              "rightValue": "PLT_DTT_365",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -192,
+        304
+      ],
+      "id": "c75308c6-7ba2-4e06-ba4a-ed25e12b47a4",
+      "name": "If"
     }
   ],
   "pinData": {},
@@ -346,7 +428,12 @@
       "main": [
         [
           {
-            "node": "Append row in sheet",
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If",
             "type": "main",
             "index": 0
           }
@@ -373,13 +460,7 @@
     },
     "Append row in sheet": {
       "main": [
-        [
-          {
-            "node": "Loop Over Items1",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Aggregate": {
@@ -425,13 +506,35 @@
           }
         ]
       ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "00bc94d3-a802-4752-97c4-cafcbadfe041",
+  "versionId": "e5ffdc01-b219-4b9c-a623-52d72b19ac02",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "94a383c02457267bcc44878635a0fa02b7d3206c5479bfc8890faa812e2bbd97"
